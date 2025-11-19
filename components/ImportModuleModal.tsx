@@ -188,7 +188,10 @@ const ImportModuleModal: React.FC<ImportModuleModalProps> = ({ isOpen, onClose, 
             pitch: 0,
             timbre: 0,
             speakingRate: 100,
-            emotion: 'neutral'
+            emotion: 'neutral',
+            indexRate: 0.7, // Default
+            f0Method: 'rmvpe', // Default
+            protectVolume: 0.33 // Default
         },
         source: {
             type: importMethod,

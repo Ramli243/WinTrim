@@ -16,6 +16,10 @@ export async function generateSpeech(
   speakingRate: number,
   emotion: string,
   stylePrompt?: string,
+  // RVC Specific Params
+  indexRate: number = 0.7,
+  f0Method: string = 'rmvpe',
+  protectVolume: number = 0.33
 ): Promise<string> {
   
   const modifiers: string[] = [];
@@ -104,12 +108,29 @@ export async function generateSpeech(
     if (inputType === 'audio') {
         // Audio-to-Audio (RVC Style)
         // Use standard flash model for multimodal input
-        // We ask it to listen to the audio and repeat/transform it.
         
+        let f0Description = '';
+        switch (f0Method) {
+            case 'rmvpe': f0Description = 'Ensure high-fidelity pitch tracking (RMVPE style).'; break;
+            case 'crepe': f0Description = 'Ensure smooth and natural pitch transitions (CREPE style).'; break;
+            case 'harvest': f0Description = 'Ensure robust, thick vocal quality (Harvest style).'; break;
+            case 'pm': f0Description = 'Prioritize fast, direct pitch conversion.'; break;
+            default: f0Description = 'Maintain accurate pitch.';
+        }
+
+        const protectInstruction = protectVolume > 0.2 ? 'Protect voiceless consonants from pitch artifacts.' : '';
+        const indexInstruction = `Apply the target voice style with ${Math.round(indexRate * 100)}% intensity relative to the input content.`;
+
         // System instruction to guide the transformation
-        const systemInstruction = `You are a professional voice actor and singer. 
+        const systemInstruction = `You are a professional voice conversion AI (RVC). 
         Your task is to listen to the input audio and repeat EXACTLY what is said (or sung), 
-        but performing it with the specific voice, style, and emotion requested. 
+        but performing it with the specific voice, style, and emotion requested.
+        
+        Technical directives:
+        1. ${f0Description}
+        2. ${indexInstruction}
+        3. ${protectInstruction}
+        
         Do not add any conversational filler. Output ONLY the transformed speech/song audio.`;
 
         const parts = [

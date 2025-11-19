@@ -15,10 +15,11 @@ import ErrorMessage from './components/ErrorMessage';
 import AdvancedSettings from './components/AdvancedSettings';
 import VoiceModuleLibrary from './components/VoiceModuleLibrary';
 import ImportModuleModal from './components/ImportModuleModal';
+import CreateModuleModal from './components/CreateModuleModal';
 import AudioUploader from './components/AudioUploader';
 import { generateSpeech } from './services/geminiService';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { AVAILABLE_VOICES, AVAILABLE_LANGUAGES, AVAILABLE_SINGING_STYLES, AVAILABLE_EMOTIONS, DEFAULT_VOICE_MODULES } from './constants';
+import { AVAILABLE_VOICES, AVAILABLE_LANGUAGES, AVAILABLE_SINGING_STYLES, AVAILABLE_EMOTIONS, DEFAULT_VOICE_MODULES, AVAILABLE_F0_METHODS } from './constants';
 import { Status, SelectOption, Preset, VoiceModule } from './types';
 
 const App: React.FC = () => {
@@ -44,6 +45,11 @@ const App: React.FC = () => {
   const [emotion, setEmotion] = useState<string>(AVAILABLE_EMOTIONS[0].value);
   const [stylePrompt, setStylePrompt] = useState<string>('');
 
+  // RVC Specific State (w-okada style features)
+  const [indexRate, setIndexRate] = useState<number>(0.7);
+  const [f0Method, setF0Method] = useState<string>('rmvpe');
+  const [protectVolume, setProtectVolume] = useState<number>(0.33);
+
   // App Status State
   const [status, setStatus] = useState<Status>(Status.IDLE);
   const [audioData, setAudioData] = useState<string | null>(null);
@@ -58,6 +64,7 @@ const App: React.FC = () => {
   // Modal States
   const [isSaveModalOpen, setIsSaveModalOpen] = useState<boolean>(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState<boolean>(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
   const MAX_TEXT_LENGTH = 500;
   
@@ -196,32 +203,41 @@ const App: React.FC = () => {
     setSpeakingRate(module.settings.speakingRate);
     setEmotion(module.settings.emotion);
     setStylePrompt(module.settings.stylePrompt);
+    
+    // Load RVC specifics
+    setIndexRate(module.settings.indexRate ?? 0.7);
+    setF0Method(module.settings.f0Method ?? 'rmvpe');
+    setProtectVolume(module.settings.protectVolume ?? 0.33);
+
     // Modules disable singing by default as they are speech-focused
     setIsSinging(false); 
   };
 
   const handleCreateModule = () => {
-      const name = prompt("Enter a name for your new Voice Module:");
-      if (!name) return;
-      
-      const description = prompt("Enter a short description (optional):") || "Custom User Module";
+      setIsCreateModalOpen(true);
+  };
 
+  const handleConfirmCreateModule = (data: { name: string; description: string; color: string }) => {
       const newModule: VoiceModule = {
           id: Date.now().toString(),
-          name: name,
-          description: description,
-          color: 'from-slate-600 to-slate-700', // Default neutral
+          name: data.name,
+          description: data.description,
+          color: data.color,
           settings: {
               voice: selectedVoice,
               pitch,
               timbre,
               speakingRate,
               emotion,
-              stylePrompt
+              stylePrompt,
+              indexRate,
+              f0Method,
+              protectVolume
           }
       };
       setCustomModules([...customModules, newModule]);
       setActiveModuleId(newModule.id);
+      setIsCreateModalOpen(false);
   };
 
   const handleDeleteModule = (id: string) => {
@@ -281,7 +297,10 @@ const App: React.FC = () => {
           timbre, 
           speakingRate, 
           emotion,
-          stylePrompt // Pass the style prompt
+          stylePrompt, // Pass the style prompt
+          indexRate,
+          f0Method,
+          protectVolume
       );
       setAudioData(data);
       setStatus(Status.SUCCESS);
@@ -447,20 +466,86 @@ const App: React.FC = () => {
                         onDelete={handleDeleteModule}
                         disabled={isLoading}
                     />
-                    <div className="bg-slate-900/30 p-4 rounded-lg border border-purple-500/20">
-                        <h4 className="text-sm font-medium text-purple-300 mb-2">Active Module Tuning</h4>
-                        <PitchSlider
-                            pitch={pitch}
-                            onChange={handlePitchChange}
-                            disabled={isLoading}
-                        />
-                        <div className="mt-3">
-                             <label className="text-xs text-slate-400 block mb-1">RVC Style Instruction</label>
-                             <textarea 
-                                value={stylePrompt}
-                                onChange={(e) => handleStylePromptChange(e.target.value)}
-                                className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs text-slate-300 h-16 resize-none focus:border-purple-500 focus:outline-none"
-                             />
+                    <div className="bg-slate-900/30 p-5 rounded-xl border border-purple-500/20 shadow-inner">
+                        <h4 className="text-sm font-bold text-purple-300 mb-4 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                              <path d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785l-.238-1.192ZM6.949 5.684a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.683a1 1 0 0 1 .633.633l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633L6.95 5.684ZM13.97 13.97a1 1 0 0 0-1.94 0l-.055.272a1 1 0 0 1-.797.797l-.272.055a1 1 0 0 0 0 1.94l.272.055a1 1 0 0 1 .797.797l.055.272a1 1 0 0 0 1.94 0l.055-.272a1 1 0 0 1 .797-.797l.272-.055a1 1 0 0 0 0-1.94l-.272-.055a1 1 0 0 1-.797-.797l-.055-.272Z" />
+                            </svg>
+                            Active Module Tuning
+                        </h4>
+                        
+                        <div className="space-y-5">
+                            <PitchSlider
+                                pitch={pitch}
+                                onChange={handlePitchChange}
+                                disabled={isLoading}
+                            />
+
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* Index Rate Slider */}
+                                <div>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <label className="text-xs text-slate-400 font-medium">Index Rate</label>
+                                        <span className="text-xs font-mono bg-slate-800 text-slate-300 px-1.5 rounded">
+                                            {indexRate.toFixed(1)}
+                                        </span>
+                                    </div>
+                                    <input 
+                                        type="range" min="0" max="1" step="0.1"
+                                        value={indexRate}
+                                        onChange={(e) => setIndexRate(Number(e.target.value))}
+                                        disabled={isLoading}
+                                        title="Controls how strong the accent/timbre from the index file is applied."
+                                        className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:rounded-full"
+                                    />
+                                </div>
+
+                                {/* Protect Volume Slider */}
+                                <div>
+                                    <div className="flex justify-between items-center mb-1">
+                                        <label className="text-xs text-slate-400 font-medium">Protect</label>
+                                        <span className="text-xs font-mono bg-slate-800 text-slate-300 px-1.5 rounded">
+                                            {protectVolume.toFixed(2)}
+                                        </span>
+                                    </div>
+                                    <input 
+                                        type="range" min="0" max="0.5" step="0.01"
+                                        value={protectVolume}
+                                        onChange={(e) => setProtectVolume(Number(e.target.value))}
+                                        disabled={isLoading}
+                                        title="Protect voiceless consonants and breath sounds from pitch shifting artifacts."
+                                        className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-purple-500 [&::-webkit-slider-thumb]:rounded-full"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* F0 Method Selector */}
+                            <div>
+                                <label className="block text-xs text-slate-400 font-medium mb-1">
+                                    F0 Method (Pitch Detection)
+                                </label>
+                                <select
+                                    value={f0Method}
+                                    onChange={(e) => setF0Method(e.target.value)}
+                                    disabled={isLoading}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-white p-2 focus:border-purple-500 outline-none"
+                                >
+                                    {AVAILABLE_F0_METHODS.map(m => (
+                                        <option key={m.value} value={m.value}>{m.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Style Prompt */}
+                            <div className="pt-2 border-t border-slate-700/50">
+                                 <label className="text-xs text-slate-400 font-medium block mb-1">RVC Style Instruction</label>
+                                 <textarea 
+                                    value={stylePrompt}
+                                    onChange={(e) => handleStylePromptChange(e.target.value)}
+                                    placeholder="Additional voice characteristics..."
+                                    className="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs text-slate-300 h-16 resize-none focus:border-purple-500 focus:outline-none"
+                                 />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -505,6 +590,12 @@ const App: React.FC = () => {
         onImport={handleImportConfirm}
         voices={AVAILABLE_VOICES}
       />
+      {isCreateModalOpen && (
+        <CreateModuleModal 
+           onCreate={handleConfirmCreateModule}
+           onClose={() => setIsCreateModalOpen(false)}
+        />
+      )}
     </>
   );
 };

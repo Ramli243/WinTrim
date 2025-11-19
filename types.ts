@@ -53,6 +53,10 @@ export interface VoiceModule {
     speakingRate: number;
     emotion: string;
     stylePrompt: string;
+    // RVC Specific Settings
+    indexRate?: number; // 0.0 - 1.0: Influence of index file
+    f0Method?: string; // pm, harvest, crepe, rmvpe
+    protectVolume?: number; // 0.0 - 0.5: Protect voiceless consonants
   };
   source?: {
     type: 'url' | 'file';

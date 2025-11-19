@@ -77,6 +77,13 @@ export const AVAILABLE_EMOTIONS: SelectOption[] = [
   { name: 'Excited', value: 'excited' },
 ];
 
+export const AVAILABLE_F0_METHODS: SelectOption[] = [
+  { name: 'rmvpe (Best Quality)', value: 'rmvpe' },
+  { name: 'crepe (Smooth)', value: 'crepe' },
+  { name: 'harvest (Thick)', value: 'harvest' },
+  { name: 'pm (Fast)', value: 'pm' },
+];
+
 export const DEFAULT_VOICE_MODULES: VoiceModule[] = [
   {
     id: 'vm_cyber_narrator',
@@ -89,7 +96,10 @@ export const DEFAULT_VOICE_MODULES: VoiceModule[] = [
       timbre: 2,
       speakingRate: 110,
       emotion: 'neutral',
-      stylePrompt: 'Speak with a precise, metallic, and futuristic cadence. Enunciate clearly like a high-tech AI interface.'
+      stylePrompt: 'Speak with a precise, metallic, and futuristic cadence. Enunciate clearly like a high-tech AI interface.',
+      indexRate: 0.7,
+      f0Method: 'rmvpe',
+      protectVolume: 0.33
     }
   },
   {
@@ -103,7 +113,10 @@ export const DEFAULT_VOICE_MODULES: VoiceModule[] = [
       timbre: -3,
       speakingRate: 85,
       emotion: 'neutral',
-      stylePrompt: 'Speak with a raspy, breathy, and aged quality. Add pauses for dramatic effect, like an old wizard telling a tale by a fire.'
+      stylePrompt: 'Speak with a raspy, breathy, and aged quality. Add pauses for dramatic effect, like an old wizard telling a tale by a fire.',
+      indexRate: 0.8,
+      f0Method: 'harvest',
+      protectVolume: 0.2
     }
   },
   {
@@ -117,7 +130,10 @@ export const DEFAULT_VOICE_MODULES: VoiceModule[] = [
       timbre: 1,
       speakingRate: 105,
       emotion: 'excited',
-      stylePrompt: 'Speak with the professional, projecting tone of a prime-time news anchor. Use clear, punchy intonation.'
+      stylePrompt: 'Speak with the professional, projecting tone of a prime-time news anchor. Use clear, punchy intonation.',
+      indexRate: 0.5,
+      f0Method: 'rmvpe',
+      protectVolume: 0.33
     }
   },
   {
@@ -131,7 +147,10 @@ export const DEFAULT_VOICE_MODULES: VoiceModule[] = [
       timbre: 0,
       speakingRate: 90,
       emotion: 'whispering',
-      stylePrompt: 'Speak in a dreamy, floating, and ethereal manner. Elongate vowels slightly and maintain a soft, haunting atmosphere.'
+      stylePrompt: 'Speak in a dreamy, floating, and ethereal manner. Elongate vowels slightly and maintain a soft, haunting atmosphere.',
+      indexRate: 0.9,
+      f0Method: 'crepe',
+      protectVolume: 0.5
     }
   }
 ];
