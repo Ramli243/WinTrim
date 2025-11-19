@@ -43,9 +43,9 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onAudioSelected, disabled
       return;
     }
 
-    // Limit size (e.g., 10MB for base64 safety)
-    if (file.size > 10 * 1024 * 1024) {
-        alert('File size too large. Please keep it under 10MB.');
+    // Limit size (e.g., 50MB for base64 safety)
+    if (file.size > 50 * 1024 * 1024) {
+        alert('File size too large. Please keep it under 50MB.');
         return;
     }
 
@@ -132,7 +132,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onAudioSelected, disabled
           <div className="flex flex-col items-center text-slate-400 p-4">
             <CloudArrowUpIcon className="mb-2 text-slate-500" />
             <p className="text-sm font-medium">Click to upload or drag audio here</p>
-            <p className="text-xs text-slate-500 mt-1">MP3, WAV, AAC (Max 10MB)</p>
+            <p className="text-xs text-slate-500 mt-1">MP3, WAV, AAC (Max 50MB)</p>
           </div>
         )}
       </div>
