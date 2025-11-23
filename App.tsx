@@ -22,6 +22,13 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { AVAILABLE_VOICES, AVAILABLE_LANGUAGES, AVAILABLE_SINGING_STYLES, AVAILABLE_EMOTIONS, DEFAULT_VOICE_MODULES, AVAILABLE_F0_METHODS } from './constants';
 import { Status, SelectOption, Preset, VoiceModule } from './types';
 
+const TrashIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={className}>
+        <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.58.22-2.365.468a.75.75 0 1 0 .53 1.405A18.06 18.06 0 0 1 10 6.002c1.606 0 3.16.204 4.685.603a.75.75 0 1 0 .53-1.405 19.592 19.592 0 0 0-2.365-.468v-.443A2.75 2.75 0 0 0 11.25 1h-2.5ZM10 7.5c-1.933 0-3.5 1.567-3.5 3.5s1.567 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.567-3.5-3.5-3.5Z" clipRule="evenodd" />
+        <path d="M3 10a7 7 0 1 1 14 0 7 7 0 0 1-14 0Zm1.042-.35a5.5 5.5 0 0 0 9.916 0H4.042Z" />
+    </svg>
+);
+
 const App: React.FC = () => {
   // Mode State
   const [mode, setMode] = useState<'studio' | 'modules'>('studio');
@@ -70,6 +77,7 @@ const App: React.FC = () => {
   
   // Helpers
   const allModules = [...DEFAULT_VOICE_MODULES, ...customModules];
+  const isActiveModuleCustom = customModules.some(m => m.id === activeModuleId);
 
   const resetActivePreset = () => {
      if (activePresetId !== 'custom') setActivePresetId('custom');
@@ -467,12 +475,24 @@ const App: React.FC = () => {
                         disabled={isLoading}
                     />
                     <div className="bg-slate-900/30 p-5 rounded-xl border border-purple-500/20 shadow-inner">
-                        <h4 className="text-sm font-bold text-purple-300 mb-4 flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                              <path d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785l-.238-1.192ZM6.949 5.684a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.683a1 1 0 0 1 .633.633l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633L6.95 5.684ZM13.97 13.97a1 1 0 0 0-1.94 0l-.055.272a1 1 0 0 1-.797.797l-.272.055a1 1 0 0 0 0 1.94l.272.055a1 1 0 0 1 .797.797l.055.272a1 1 0 0 0 1.94 0l.055-.272a1 1 0 0 1 .797-.797l.272-.055a1 1 0 0 0 0-1.94l-.272-.055a1 1 0 0 1-.797-.797l-.055-.272Z" />
-                            </svg>
-                            Active Module Tuning
-                        </h4>
+                        <div className="flex items-center justify-between mb-4">
+                            <h4 className="text-sm font-bold text-purple-300 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                                <path d="M15.98 1.804a1 1 0 0 0-1.96 0l-.24 1.192a1 1 0 0 1-.784.785l-1.192.238a1 1 0 0 0 0 1.962l1.192.238a1 1 0 0 1 .785.785l.238 1.192a1 1 0 0 0 1.962 0l.238-1.192a1 1 0 0 1 .785-.785l1.192-.238a1 1 0 0 0 0-1.962l-1.192-.238a1 1 0 0 1-.785-.785l-.238-1.192ZM6.949 5.684a1 1 0 0 0-1.898 0l-.683 2.051a1 1 0 0 1-.633.633l-2.051.683a1 1 0 0 0 0 1.898l2.051.683a1 1 0 0 1 .633.633l.683 2.051a1 1 0 0 0 1.898 0l.683-2.051a1 1 0 0 1 .633-.633l2.051-.683a1 1 0 0 0 0-1.898l-2.051-.683a1 1 0 0 1-.633-.633L6.95 5.684ZM13.97 13.97a1 1 0 0 0-1.94 0l-.055.272a1 1 0 0 1-.797.797l-.272.055a1 1 0 0 0 0 1.94l.272.055a1 1 0 0 1 .797.797l.055.272a1 1 0 0 0 1.94 0l.055-.272a1 1 0 0 1 .797-.797l.272-.055a1 1 0 0 0 0-1.94l-.272-.055a1 1 0 0 1-.797-.797l-.055-.272Z" />
+                                </svg>
+                                Active Module Tuning
+                            </h4>
+                            {isActiveModuleCustom && (
+                                <button 
+                                    onClick={() => activeModuleId && handleDeleteModule(activeModuleId)}
+                                    className="text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded px-2 py-1 transition-colors flex items-center gap-1"
+                                    title="Delete this custom module"
+                                >
+                                    <TrashIcon className="w-3 h-3" />
+                                    Delete
+                                </button>
+                            )}
+                        </div>
                         
                         <div className="space-y-5">
                             <PitchSlider

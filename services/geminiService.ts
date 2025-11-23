@@ -22,9 +22,39 @@ export async function generateSpeech(
   protectVolume: number = 0.33
 ): Promise<string> {
   
+  let textToSpeak = input;
+  let currentInputType = inputType;
+
+  // --- Step 1: Transcription (If Audio Input) ---
+  // Since direct Audio-to-Audio is currently limited on the REST API, we transcribe first
+  // to ensure robust operation using the specialized TTS model for output.
+  if (inputType === 'audio') {
+    try {
+        const transResponse = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: [{
+                parts: [
+                    { inlineData: { mimeType: 'audio/mp3', data: input } },
+                    { text: "Transcribe the spoken words or lyrics in this audio file verbatim. Output ONLY the text, no descriptions, no timestamps." }
+                ]
+            }]
+        });
+        
+        if (transResponse.text) {
+            textToSpeak = transResponse.text;
+            currentInputType = 'text'; // Proceed as text
+        } else {
+            throw new Error("Could not transcribe audio content.");
+        }
+    } catch (error) {
+        console.error("Transcription failed:", error);
+        throw new Error("Failed to process input audio. Please ensure the file contains clear speech.");
+    }
+  }
+
   const modifiers: string[] = [];
 
-  // --- Modifier Logic (Shared) ---
+  // --- Modifier Logic ---
   if (!isSinging) {
     if (emotion && emotion !== 'neutral') {
       if (emotion === 'whispering') {
@@ -55,6 +85,12 @@ export async function generateSpeech(
         else if (speakingRate > 100) modifiers.push('at a fast pace');
         else if (speakingRate < 75) modifiers.push('at a very slow pace');
         else if (speakingRate < 100) modifiers.push('at a slow pace');
+    }
+
+    // Map RVC params to style modifiers for audio-converted inputs
+    if (inputType === 'audio') {
+        if (protectVolume > 0.35) modifiers.push("enunciating consonants very clearly");
+        if (indexRate > 0.8) modifiers.push("with strong character");
     }
   }
 
@@ -89,110 +125,58 @@ export async function generateSpeech(
         else if (pitch < -4) pitchDescription = ' in a low register';
         else if (pitch < 0) pitchDescription = ' in a slightly low register';
     }
-    prompt = `Sing the following ${inputType === 'audio' ? 'audio content' : 'lyrics'} ${styleDescription}${pitchDescription}. Emphasize a clear melodic and rhythmic delivery.\n\n${stylePrompt ? `Style Direction: ${stylePrompt}\n\n` : ''}${inputType === 'text' ? `Lyrics: "${input}"` : ''}`;
+    
+    prompt = `Sing the following lyrics ${styleDescription}${pitchDescription}. Emphasize a clear melodic and rhythmic delivery.\n\n${stylePrompt ? `Style Direction: ${stylePrompt}\n\n` : ''}Lyrics: "${textToSpeak}"`;
   } else {
     const modifierString = modifiers.length > 0 ? ` ${modifiers.join(', ')}` : '';
     
     const instruction = (accent && accent !== 'Standard')
-      ? `Speak the following ${inputType === 'audio' ? 'audio content' : 'text'} in ${language} with an ${accent} accent${modifierString}.`
-      : `Speak the following ${inputType === 'audio' ? 'audio content' : 'text'} in ${language}${modifierString}.`;
+      ? `Speak the following text in ${language} with an ${accent} accent${modifierString}.`
+      : `Speak the following text in ${language}${modifierString}.`;
       
     const styleInstruction = stylePrompt ? `\n\nImportant Style Direction: ${stylePrompt}` : '';
     
-    prompt = `${instruction}${styleInstruction}\n\n${inputType === 'text' ? `Text: "${input}"` : ''}`;
+    prompt = `${instruction}${styleInstruction}\n\nText: "${textToSpeak}"`;
   }
 
   try {
-    let response;
-
-    if (inputType === 'audio') {
-        // Audio-to-Audio (RVC Style)
-        // Use standard flash model for multimodal input
-        
-        let f0Description = '';
-        switch (f0Method) {
-            case 'rmvpe': f0Description = 'Ensure high-fidelity pitch tracking (RMVPE style).'; break;
-            case 'crepe': f0Description = 'Ensure smooth and natural pitch transitions (CREPE style).'; break;
-            case 'harvest': f0Description = 'Ensure robust, thick vocal quality (Harvest style).'; break;
-            case 'pm': f0Description = 'Prioritize fast, direct pitch conversion.'; break;
-            default: f0Description = 'Maintain accurate pitch.';
-        }
-
-        const protectInstruction = protectVolume > 0.2 ? 'Protect voiceless consonants from pitch artifacts.' : '';
-        const indexInstruction = `Apply the target voice style with ${Math.round(indexRate * 100)}% intensity relative to the input content.`;
-
-        // System instruction to guide the transformation
-        const systemInstruction = `You are a professional voice conversion AI (RVC). 
-        Your task is to listen to the input audio and repeat EXACTLY what is said (or sung), 
-        but performing it with the specific voice, style, and emotion requested.
-        
-        Technical directives:
-        1. ${f0Description}
-        2. ${indexInstruction}
-        3. ${protectInstruction}
-        
-        Do not add any conversational filler. Output ONLY the transformed speech/song audio.`;
-
-        const parts = [
-            { inlineData: { mimeType: 'audio/mp3', data: input } }, // Input is base64
-            { text: prompt }
-        ];
-
-        response = await ai.models.generateContent({
-            model: "gemini-2.5-flash", // Using Flash for multimodal capabilities
-            contents: [{ parts }],
-            config: {
-                systemInstruction,
-                responseModalities: [Modality.AUDIO],
-                speechConfig: {
-                    voiceConfig: {
-                        prebuiltVoiceConfig: { voiceName: voice },
-                    },
+    // Use specialized TTS model for high quality output
+    const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-preview-tts",
+        contents: [{ parts: [{ text: prompt }] }],
+        config: {
+            responseModalities: [Modality.AUDIO],
+            speechConfig: {
+                voiceConfig: {
+                    prebuiltVoiceConfig: { voiceName: voice },
                 },
             },
-        });
-
-    } else {
-        // Text-to-Speech
-        // Use specialized TTS model
-        response = await ai.models.generateContent({
-            model: "gemini-2.5-flash-preview-tts",
-            contents: [{ parts: [{ text: prompt }] }],
-            config: {
-                responseModalities: [Modality.AUDIO],
-                speechConfig: {
-                    voiceConfig: {
-                        prebuiltVoiceConfig: { voiceName: voice },
-                    },
-                },
-            },
-        });
-    }
+        },
+    });
 
     const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
     if (base64Audio) {
       return base64Audio;
     } else {
-      throw new Error("Generation successful, but no audio was produced. The model may not support the requested input.");
+      throw new Error("Generation successful, but no audio was produced.");
     }
   } catch (error) {
     console.error("Error generating speech:", error);
     
     if (error instanceof Error) {
-        if (error.message.startsWith("Generation successful")) {
-            throw error;
-        }
+        if (error.message.startsWith("Generation successful")) throw error;
 
         const errorMessage = error.message.toLowerCase();
 
         if (errorMessage.includes('api key')) throw new Error("Authentication failed. Please check your API key.");
-        if (errorMessage.includes('invalid_argument')) throw new Error("Invalid request configuration.");
-        if (errorMessage.includes('resource_exhausted')) throw new Error("Rate limit exceeded. Please wait.");
+        if (errorMessage.includes('not found')) throw new Error("The selected model is not available. Please try again later.");
+        if (errorMessage.includes('invalid_argument')) throw new Error("Invalid configuration. Please try adjusting your settings.");
+        if (errorMessage.includes('resource_exhausted')) throw new Error("Rate limit exceeded. Please wait a moment.");
         if (errorMessage.includes('blocked')) throw new Error("Request blocked due to safety settings.");
-        if (errorMessage.includes('internal')) throw new Error("Service temporarily unavailable.");
+        if (errorMessage.includes('modality')) throw new Error("The feature is currently unavailable in your region.");
         
-        throw new Error("An unexpected error occurred while communicating with the API.");
+        throw new Error(error.message || "An unexpected error occurred.");
     }
     
     throw new Error("An unknown error occurred.");

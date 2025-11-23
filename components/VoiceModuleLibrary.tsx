@@ -104,8 +104,9 @@ const VoiceModuleLibrary: React.FC<VoiceModuleLibraryProps> = ({
                       e.stopPropagation();
                       onDelete(module.id);
                     }}
-                    className="text-slate-500 hover:text-red-400 transition-colors p-1 opacity-0 group-hover:opacity-100 focus:opacity-100"
+                    className={`text-slate-500 hover:text-red-400 transition-colors p-1 focus:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
                     aria-label="Delete module"
+                    title="Delete this module"
                   >
                     <TrashIcon />
                   </button>
